@@ -47,7 +47,6 @@ helm.sh/chart: {{ include "openfga.chart" . }}
 {{- with .Values.commonLabels }}
 {{ . | toYaml }}
 {{- end }}
-app.kubernetes.io/component: authorization-controller
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -61,6 +60,28 @@ Selector labels
 {{- define "openfga.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "openfga.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/component: authorization-controller
+{{- end }}
+
+{{/*
+Migration Job labels
+The migration Job pod need to have a different set of labels than the
+set applied to the main OpenFGA pods otherwise they are matched by the
+HorizontalPodAutoscaler.
+*/}}
+{{- define "migrate.labels" -}}
+helm.sh/chart: {{ include "openfga.chart" . }}
+app.kubernetes.io/name: {{ include "openfga.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/component: migration
+{{- with .Values.commonLabels }}
+{{ . | toYaml }}
+{{- end }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+app.kubernetes.io/part-of: openfga
 {{- end }}
 
 {{/*

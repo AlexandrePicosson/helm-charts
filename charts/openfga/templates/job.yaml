@@ -4,7 +4,7 @@ kind: Job
 metadata:
   name: {{ include "openfga.fullname" . }}-migrate
   labels:
-    {{- include "openfga.labels" . | nindent 4 }}
+    {{- include "migrate.labels" . | nindent 4 }}
   {{- with .Values.migrate.labels }}
     {{- toYaml . | nindent 4}}
   {{- end}}
@@ -20,7 +20,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "openfga.labels" . | nindent 8 }}
+        {{- include "migrate.labels" . | nindent 8 }}
       {{- with .Values.migrate.labels }}
         {{- toYaml . | nindent 8}}
       {{- end}}
